@@ -1,10 +1,12 @@
 // import './App.css';
 
 import {Home} from './pages/Home';
+import { ProductListPage } from './pages/ProductListPage';
 import logo from './ibethHome.png';
 import searchIcon from "./search-svgrepo-com.svg";
 import shoppingCartImage from "./shopping-cart-full-sign-svgrepo-com.svg";
 import styled from 'styled-components';
+import { useState } from 'react';
 
 // import { useFeaturedBanners } from './utils/hooks/useFeaturedBanners';
 
@@ -13,11 +15,12 @@ const AppContainer = styled.div`
 `;
 
 const AppBody = styled.div`
-  background-color: #eadbcb;
+  background-color: #f4efef;
+  // background-color: #eadbcb;
 `;
 
 const AppHeader = styled.header`
-  background-color: #d4b595;
+  background-color: #dcc1a7;
   min-height: 8vh;
   display: flex;
   flex-direction: row;
@@ -105,16 +108,33 @@ const SearchIcon = styled.img`
 `;
 
 const Footer = styled.footer`
+  height: 150px;
+  background-color: #dcc1a7;
+  position: relative;
+  margin-top: auto;
+`;
+
+const ViewAllProductsButton = styled.button`
+  border-color: #d4b595;
+  height: 30px;
+  width: 160px;
+  border-style: solid;
+  border-width: 1px;
+  margin-bottom: 20px;
   background-color: #d4b595;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 16px;
 `;
 
 function App() {
   // const { data, isLoading } = useFeaturedBanners();
   // console.log(data, isLoading);
+  const [enabledHomePage, setEnabledHomePage] = useState(true);
+  
   return (
     <AppContainer>
       <AppHeader>
-        <LogoImage src={logo} alt='logo'/>
+        <LogoImage src={logo} alt='logo' onClick={() => setEnabledHomePage(true)}/>
         <SearchForm>
           <SearchBox>
             <SearchInput type='text'/>
@@ -124,7 +144,17 @@ function App() {
         <ShoppingCart src={shoppingCartImage} alt='shoppingCart' />
       </AppHeader>
       <AppBody>
-        <Home />
+        {
+          enabledHomePage ? 
+            <>
+              <Home />
+              <ViewAllProductsButton onClick={() => setEnabledHomePage(false)}>
+                View all products
+              </ViewAllProductsButton>
+            </>
+            : 
+            <ProductListPage />
+        }
       <Footer>
         Ecommerce created during Wizeline’s Academy React Bootcamp
       </Footer>

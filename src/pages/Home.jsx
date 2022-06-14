@@ -46,6 +46,7 @@ const ProductCategoryImage = styled.img`
   opacity: 0;
   transition: 2s;
   width: 80%;
+  
   &.loaded {
     opacity: 1;
   }
@@ -56,40 +57,6 @@ const ProductCategoryImage = styled.img`
 
   @media (min-width: 561px) and (max-width: 820px) {
     height: 420px;
-  }
-`;
-
-const FeaturedProductsContainer = styled.div`
-  display: grid;
-  gap: 4px;
-  grid-template-columns: repeat(4, 1fr);
-  margin-top: 40px;
-
-  @media (max-width: 560px) {
-    display: grid;
-    gap: 2px;
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  @media (min-width: 561px) and (max-width: 820px) {
-    display: grid;
-    gap: 2px;
-    grid-template-columns: repeat(3, 1fr);
-  }
-`;
-
-const FeaturedProductImage = styled.img`
-  height: 280px;
-  width: 260px;
-
-  @media (max-width: 560px) {
-    height: 180px;
-    width: 160px;
-  }
-
-  @media (min-width: 561px) and (max-width: 820px) {
-    height: 240px;
-    width: 220px;
   }
 `;
 
@@ -116,6 +83,128 @@ const FeaturedBannerImage = styled.img`
   }
 `;
 
+const FeaturedProductsContainer = styled.div`
+  display: grid;
+  gap: 4px;
+  grid-template-columns: repeat(4, 1fr);
+  margin-top: 40px;
+  padding-left: 2%;
+  padding-right: 2%;
+
+  @media (max-width: 560px) {
+    display: grid;
+    gap: 2px;
+    grid-template-columns: repeat(2, 1fr);
+    padding-left: 1%;
+    padding-right: 1%;  
+  }
+
+  @media (min-width: 561px) and (max-width: 820px) {
+    display: grid;
+    gap: 1px;
+    grid-template-columns: repeat(3, 1fr);
+    padding-left: 1%;
+    padding-right: 1%;  
+  }
+`;
+
+const FeaturedProductContainer = styled.div`
+  background-color: white;
+  border-radius: 18px;
+  height: 85%;
+  width: 96%;
+`;
+
+const FeaturedProductDescriptionContainer = styled.div`
+  background-color: white;
+  border-radius: inherit;
+  display: flex;
+  flex-direction: row;
+  height: 15%;
+  justify-content: space-between;
+  margin-bottom: 4px;
+  padding-left: 3%;
+  text-align: left;
+`;
+
+const FeaturedProductName = styled.p`
+  font-family: "Times New Roman", Times, serif;
+  font-size: 18px;
+  font-weight: bolder;
+  width: 60%;
+
+  @media (max-width: 560px) {
+    font-size: 12px;
+  }
+
+  @media (min-width: 561px) and (max-width: 820px) {
+    font-size: 16px;
+  }
+`;
+
+const FeaturedProductPrice = styled.p`
+  background-color: #d4b595;
+  border-bottom-left-radius: 10px;
+  border-top-left-radius: 10px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 16px;
+  height: 2.5vh;
+  padding-bottom: 4px;
+  padding-left: 8px;
+  padding-top: 4px;
+  width: 30%;
+
+  @media (max-width: 560px) {
+    font-size: 12px;
+    width: 40%;
+  }
+
+  @media (min-width: 561px) and (max-width: 820px) {
+    font-size: 16px;
+    width: 30%;
+  }
+`;
+
+const FeaturedProductImage = styled.img`
+  border-radius: 18px;
+  height: 60%;
+  margin-bottom: 15px;
+  width: 260px;
+  
+  @media (max-width: 560px) {
+    height: 180px;
+    width: 160px;
+  }
+
+  @media (min-width: 561px) and (max-width: 820px) {
+    height: 240px;
+    width: 220px;
+  }
+`;
+
+const FeaturedProductCategory = styled.p`
+  background-color: #d4b595;
+  border-bottom-right-radius: 10px;
+  border-top-right-radius: 10px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 16px;
+  height: 2.5vh;
+  padding-bottom: 4px;
+  padding-left: 8px;
+  padding-top: 4px;
+  width: 30%;
+
+  @media (max-width: 560px) {
+    font-size: 12px;
+    width: 40%;
+  }
+
+  @media (min-width: 561px) and (max-width: 820px) {
+    font-size: 16px;
+    width: 30%;
+  }
+`;
+
 export const Home = () => {
   const productCategories = mockProductCategories.results;
   const featuredProducts = mockFeaturedProducts.results;
@@ -138,13 +227,13 @@ export const Home = () => {
     selectedBannerIndex === 0 ?
       setSelectedBannerIndex(featuredBanners.length - 1) 
       : setSelectedBannerIndex(selectedBannerIndex - 1);
-  }
+  };
 
   const handleNextImage = () => {
     selectedBannerIndex === featuredBanners.length - 1 ?
       setSelectedBannerIndex(0) 
       : setSelectedBannerIndex(selectedBannerIndex + 1);
-  }
+  };
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -154,7 +243,7 @@ export const Home = () => {
       setProductCategory(productCategories[selectedCategoryIndex]);
     }, 1000)
     return () => clearInterval(interval);
-  })
+  });
   
   return (
     <>
@@ -164,7 +253,7 @@ export const Home = () => {
           src={featuredBanner.data.main_image.url} 
           alt={featuredBanner.data.main_image.alt}
         />
-        <RightArrow src={arrow} alt='rigthArrow' onClick={handleNextImage}/>
+        <RightArrow src={arrow} alt='rightArrow' onClick={handleNextImage}/>
       </FeaturedBannersContainer>
       <ProductCategoriesContainer>
         <ProductCategoryImage 
@@ -177,15 +266,19 @@ export const Home = () => {
       <FeaturedProductsContainer>
         {
           featuredProducts.map(featuredProduct =>
-            <div key={featuredProduct.id}>
+            <FeaturedProductContainer key={featuredProduct.id}>
+              <FeaturedProductDescriptionContainer>
+                <FeaturedProductName>{featuredProduct.data.name}</FeaturedProductName>
+                <FeaturedProductPrice>$ {featuredProduct.data.price}</FeaturedProductPrice>
+              </FeaturedProductDescriptionContainer>
               <FeaturedProductImage 
                 src={featuredProduct.data.mainimage.url} 
                 alt={featuredProduct.data.mainimage.alt}
               />
-              <p>{featuredProduct.data.name}</p>
-              <p>{getProductCategoryById(featuredProduct.data.category.id).name}</p>
-              <p>{featuredProduct.data.price}</p>
-            </div>    
+              <FeaturedProductCategory>
+                {getProductCategoryById(featuredProduct.data.category.id).name}
+              </FeaturedProductCategory>
+            </FeaturedProductContainer>    
           )
         }
       </FeaturedProductsContainer>      
