@@ -44,11 +44,6 @@ export const LogoImage = styled.img`
   }
 `;
 
-export const SearchForm = styled.form`
-  display: flex;
-  justify-content: center;
-`;
-
 export const ShoppingCart = styled.img`
   max-height: 10vh;
 
@@ -64,53 +59,9 @@ export const ShoppingCart = styled.img`
   }
 `;
 
-export const SearchBox = styled.div`
-  position: relative;
-`;
-
-export const SearchInput = styled.input`
-  border-radius: 10px;
-  border: 1px solid white;
-  font-size: 1.2rem;
-  height: 30px;
-  padding: 5px 30px 5px 10px;
-  &:focus {
-    outline: none;
-    border: 1px solid #F88EC2;
-    box-shadow: 0 0 5px #EBBED4;
-  }
-`;
-
-export const SearchIcon = styled.img`
-  background: none;
-  border: none;
-  cursor: pointer;
-  height: 100%;
-  position: absolute;
-  right: 0;
-  top: 0;
-  &:focus {
-    outline: none;
-    border: 1px solid #F88EC2;
-    box-shadow: 0 0 5px #EBBED4;
-  }
-`;
-
 export const Footer = styled.footer`
   height: 150px;
   background-color: #dcc1a7;
   position: relative;
   margin-top: auto;
-`;
-
-export const ViewAllProductsButton = styled.button`
-  border-color: #d4b595;
-  height: 30px;
-  width: 160px;
-  border-style: solid;
-  border-width: 1px;
-  margin-bottom: 20px;
-  background-color: #d4b595;
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 16px;
 `;

@@ -1,5 +1,6 @@
-import * as mockFeaturedBanners from '../data/featured-banners.json';
-import * as mockFeaturedProducts from '../data/featured-products.json';
+// import * as mockFeaturedBanners from '../data/featured-banners.json';
+
+// import * as mockFeaturedProducts from '../data/featured-products.json';
 
 import {
   FeaturedBannerImage,
@@ -9,40 +10,85 @@ import {
   ProductCategoryImage,
   ProductCategoryName,
   RightArrow,
+  ViewAllProductsButton,
 } from './styles/HomeStylesCss';
-import { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useEffect, useMemo, useState } from 'react';
 
 import { ProductList } from '../components/ProductList';
+import { Spinner } from '../components/Spinner';
 import arrow from '../up-arrow-svgrepo-com.svg';
-import { mockProductCategories } from '../data/product-categories';
+import { useFeaturedBanners } from '../utils/hooks/useFeaturedBanners';
+import { useFeaturedProducts } from '../utils/hooks/useFeaturedProducts';
+import { useProductCategories } from '../utils/hooks/useProductCategories';
+
+// import { mockProductCategories } from '../data/product-categories';
 
 export const Home = () => {
-  const featuredProducts = mockFeaturedProducts.results;
-  const [productCategory, setProductCategory] = useState({
-    productCategories: mockProductCategories.results,
-    selectedCategoryIndex: 0,
-    selectedProductCategory: mockProductCategories.results[0],
-  });
-  const [featuredBanner, setFeaturedBanner] = useState({
-    featuredBanners: mockFeaturedBanners.results,
-    selectedBannerIndex: 0,
-    selectedFeaturedBanner: mockFeaturedBanners.results[0],
-  });
+  console.log('se ejecuta el componente nuevamente');
+  // eslint-disable-next-line max-len
+  const { data: {results: bannersData}, isLoading: isBannersDataLoading } = useFeaturedBanners();
+  const { 
+    data: {results: productCategoriesData}, 
+    isLoading: isProductCategoriesDataLoading,
+  } = useProductCategories();
+  const { 
+    data: {results: featuredProductsData}, 
+    isLoading: isFeaturedProductsDataLoading,
+  } = useFeaturedProducts();
+
+  const [featuredBanner, setFeaturedBanner] = useState({});
+  const [productCategory, setProductCategory] = useState({});
+  const [featuredProducts, setFeaturedProducts] = useState([]);
   const [productCategoryLoaded, setProductCategoryLoaded] = useState(false);
-  
+
+  const navigate = useNavigate();
+
   useEffect(() => {
-    const interval = setInterval(() => {
-      const currentIndex = productCategory.selectedCategoryIndex;
-      const newIndex = currentIndex < productCategory.productCategories.length - 1 ?
-      currentIndex + 1 : 0;
-      setProductCategory({
-        ...productCategory, 
-        selectedProductCategory: productCategory.productCategories[newIndex],
-        selectedCategoryIndex: newIndex,
+    if (!isBannersDataLoading) {
+      setFeaturedBanner({
+        featuredBanners: bannersData,
+        selectedBannerIndex: 0,
+        selectedFeaturedBanner: bannersData[0],
       });
-    }, 3000)
-    return () => clearInterval(interval);
-  });
+    }
+    return () => setFeaturedBanner({});
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isBannersDataLoading]);
+
+  useEffect(() => {
+    if (!isProductCategoriesDataLoading) {
+      setProductCategory({
+        productCategories: productCategoriesData,
+        selectedCategoryIndex: 0,
+        selectedProductCategory: productCategoriesData[0],
+      });
+    }
+    return () => setProductCategory({});
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isProductCategoriesDataLoading]);
+
+  useEffect(() => {
+    if (!isFeaturedProductsDataLoading) {
+      setFeaturedProducts([...featuredProductsData]);
+    }
+    return () => setFeaturedProducts([]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isFeaturedProductsDataLoading]);
+
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     const currentIndex = productCategory.selectedCategoryIndex;
+  //     const newIndex = currentIndex < productCategory.productCategories.length - 1 ?
+  //     currentIndex + 1 : 0;
+  //     setProductCategory({
+  //       ...productCategory, 
+  //       selectedProductCategory: productCategory.productCategories[newIndex],
+  //       selectedCategoryIndex: newIndex,
+  //     });
+  //   }, 1000)
+  //   return () => clearInterval(interval);
+  // }, [productCategory]);
 
   const changeToNextImage = (isNextChange) => {
     const currentIndex = featuredBanner.selectedBannerIndex;
@@ -53,7 +99,7 @@ export const Home = () => {
     setFeaturedBanner({
       ...featuredBanner,
       selectedBannerIndex: newIndex,
-      selectedFeaturedBanner: featuredBanner.featuredBanners[newIndex],
+      selectedFeaturedBanner: bannersData[newIndex],
     });
   };
   
@@ -62,23 +108,36 @@ export const Home = () => {
       <FeaturedBannersContainer>
         <LeftArrow src={arrow} alt='leftArrow' onClick={() => changeToNextImage(false)}/>
         <FeaturedBannerImage
-          src={featuredBanner.selectedFeaturedBanner.data.main_image.url} 
-          alt={featuredBanner.selectedFeaturedBanner.data.main_image.alt}
+          src={featuredBanner?.selectedFeaturedBanner?.data.main_image.url}
+          alt={featuredBanner?.selectedFeaturedBanner?.data.main_image.alt}
         />
         <RightArrow src={arrow} alt='rightArrow' onClick={() => changeToNextImage(true)}/>
-      </FeaturedBannersContainer>
+      </FeaturedBannersContainer>     
       <ProductCategoriesContainer>
         <ProductCategoryImage 
-          src={productCategory.selectedProductCategory.data.main_image.url} 
-          alt={productCategory.selectedProductCategory.data.main_image.alt}
+          src={productCategory?.selectedProductCategory?.data.main_image.url} 
+          alt={productCategory?.selectedProductCategory?.data.main_image.alt}
           className={productCategoryLoaded ? 'loaded' : ''}
           onLoad={() => setProductCategoryLoaded(true)}
+          onClick={() => {
+            navigate(`products/?category=${productCategory?.selectedProductCategory?.id}`);
+          }}
         />
         <ProductCategoryName>
-          {productCategory.selectedProductCategory.data.name}
+          {productCategory?.selectedProductCategory?.data.name}
         </ProductCategoryName>
       </ProductCategoriesContainer>
-      <ProductList products={featuredProducts} />
+      {
+        isFeaturedProductsDataLoading ? 
+          <Spinner />
+        :
+          <ProductList products={featuredProducts} />
+      }
+      <Link to="/products">
+        <ViewAllProductsButton>
+          View all products
+        </ViewAllProductsButton>
+      </Link>
     </>
   )
 };

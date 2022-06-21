@@ -85,3 +85,15 @@ export const FeaturedBannerImage = styled.img`
     width: 560px;
   }
 `;
+
+export const ViewAllProductsButton = styled.button`
+  border-color: #d4b595;
+  height: auto;
+  width: 160px;
+  border-style: solid;
+  border-width: 1px;
+  margin-bottom: 20px;
+  background-color: #d4b595;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 16px;
+`;

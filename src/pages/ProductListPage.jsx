@@ -16,13 +16,27 @@ import { useEffect, useState } from 'react';
 import { ProductList } from '../components/ProductList';
 import { Spinner } from '../components/Spinner';
 import arrow from '../up-arrow-svgrepo-com.svg';
-import { mockProductCategories } from '../data/product-categories';
+import { useProductCategories } from '../utils/hooks/useProductCategories';
+import { useSearchParams } from "react-router-dom";
+
+// import { mockProductCategories } from '../data/product-categories';
+
+
 
 export const ProductListPage = () => {
-  const productCategories = mockProductCategories.results;
-  const [activeProductCategories, setActiveProductCategories] = useState([]);
+  const [query] = useSearchParams();
+  const category = query.get("category");
+  const [activeProductCategories, setActiveProductCategories] = useState(
+    category ? [category] : []
+  );
   const [filteredProducts, setFilteredProducts] = useState([]);
-  const [isLoading, setIsloading] = useState(true);
+  const [isLoading, setIsloading] = useState(false);
+  const [productCategories, setProductCategories] = useState([]);
+
+  const { 
+    data: {results: productCategoriesData}, 
+    isLoading: isProductCategoriesDataLoading,
+  } = useProductCategories();
 
   useEffect(() => {
     if (activeProductCategories.length === 0) {
@@ -38,6 +52,14 @@ export const ProductListPage = () => {
       setFilteredProducts([...newProducts]);      
     }
   }, [activeProductCategories]);
+
+  useEffect(() => {
+    if (!isProductCategoriesDataLoading) {
+      setProductCategories([...productCategoriesData]);
+    }
+    return () => setProductCategories([]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isProductCategoriesDataLoading]);
   
   const handleActivatedProductCategory = (productCategory) => {
     if (activeProductCategories.includes(productCategory.id)) {
@@ -52,9 +74,9 @@ export const ProductListPage = () => {
   };
 
   const isActive = (productCategory) => {
-    console.log('productCategory: ', productCategory);
     return activeProductCategories.includes(productCategory.id);
   };
+  console.log('productCategories: ', productCategories);
 
   return (
     <ProductListPageContainer>

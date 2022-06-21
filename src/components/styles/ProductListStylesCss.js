@@ -25,7 +25,7 @@ export const ProductListContainer = styled.div`
   }
 `;
 
-export const ProductContainer = styled.div`
+export const ProductCard = styled.div`
   background-color: white;
   border-radius: 18px;
   height: 85%;
@@ -37,7 +37,7 @@ export const ProductDescriptionContainer = styled.div`
   border-radius: inherit;
   display: flex;
   flex-direction: row;
-  height: 15%;
+  height: auto;
   justify-content: space-between;
   margin-bottom: 4px;
   padding-left: 3%;
@@ -69,7 +69,7 @@ export const ProductPrice = styled.p`
   padding-bottom: 4px;
   padding-left: 8px;
   padding-top: 4px;
-  width: 30%;
+  width: auto;
 
   @media (max-width: 560px) {
     font-size: 12px;
