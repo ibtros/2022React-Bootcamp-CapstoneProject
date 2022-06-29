@@ -87,13 +87,14 @@ export const FeaturedBannerImage = styled.img`
 `;
 
 export const ViewAllProductsButton = styled.button`
-  border-color: #d4b595;
-  height: auto;
-  width: 160px;
+  background-color: #d4b595;
+  border-color: #c9c9c9;
   border-style: solid;
   border-width: 1px;
-  margin-bottom: 20px;
-  background-color: #d4b595;
+  cursor: pointer;
   font-family: Arial, Helvetica, sans-serif;
-  font-size: 16px;
+  font-size: 14px;
+  height: 35px;
+  margin-bottom: 20px;
+  width: 165px;
 `;

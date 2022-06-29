@@ -7,14 +7,20 @@ export const SearchForm = styled.form`
 
 export const SearchBox = styled.div`
   position: relative;
+  height: 30px;
+
+  @media (min-width: 561px) and (max-width: 820px) {
+    height: 40px;
+  }
 `;
 
 export const SearchInput = styled.input`
   border-radius: 10px;
   border: 1px solid white;
   font-size: 1.2rem;
-  height: 30px;
+  height: 100%;
   padding: 5px 30px 5px 10px;
+
   &:focus {
     outline: none;
     border: 1px solid #F88EC2;
@@ -30,6 +36,7 @@ export const SearchIcon = styled.img`
   position: absolute;
   right: 0;
   top: 0;
+  
   &:focus {
     outline: none;
     border: 1px solid #F88EC2;

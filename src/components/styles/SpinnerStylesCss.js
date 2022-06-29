@@ -3,11 +3,13 @@ import styled from 'styled-components';
 
 export const SpinnerContainer = styled.div`
   display: flex;
-  height: 50px;
-  justify-content: center;
-  margin-left: 36%;
-  margin-top: 5%;
-  width: 50px;
+  height: 55px;
+  justify-content: space-around;
+  margin-left: 48%;
+  padding-top: 1%;
+  padding-bottom: 1%;
+  width: 55px;
+  position: relative;
 `;
 
 export const rotate = keyframes`

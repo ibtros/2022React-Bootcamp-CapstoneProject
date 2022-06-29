@@ -1,17 +1,25 @@
 import {
+  AddButton,
   ProductCard,
+  ProductCategory,
   ProductDescriptionContainer,
   ProductImage,
   ProductListContainer,
   ProductName,
   ProductPrice,
-} from './styles/ProductListStylesCss';
+} from './styles/ProductsGridStylesCss';
 
 import { Link } from 'react-router-dom';
+import { ShoppingCartContext } from './ShoppingCartContext';
+import { useContext } from 'react';
 
-// import { getProductCategoryById } from '../selectors/getProductCategoryById';
+export const ProductsGrid = ({products}) => {
+  const { shoppingCart, setShoppingCart } = useContext(ShoppingCartContext);
 
-export const ProductList = ({products}) => {
+  const handleAddToCart = () => {
+    setShoppingCart(shoppingCart + 1);
+  };
+
   return (
     <ProductListContainer>
       {
@@ -27,9 +35,16 @@ export const ProductList = ({products}) => {
                 alt={product.data.mainimage.alt}
               />
             </Link> 
-            {/* <ProductCategory>
-              {getProductCategoryById(product?.data.category.id)?.name}
-            </ProductCategory> */}
+            <ProductCategory>
+              {product.data.category.slug.toUpperCase()}
+            </ProductCategory>
+            <AddButton 
+              type='text'
+              disabled={product.data.stock === 0}
+              onClick={handleAddToCart}
+            >
+              ADD TO CART
+            </AddButton>
           </ProductCard>   
         )
       }

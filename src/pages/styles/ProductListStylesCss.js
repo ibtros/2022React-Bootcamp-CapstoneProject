@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const ProductListPageContainer = styled.div`
+export const ProductListContainer = styled.div`
   display: flex;
   flex-direction: row;
 
@@ -89,11 +89,13 @@ export const PaginationControls = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: center;
+  margin-bottom: 2%
 `;
 
 export const ChangePageArrow = styled.img`
   height: 7vh;
   width: 7vh;
+  cursor: pointer;
 
   @media (min-width: 1px) and (max-width: 820px) {
     height: 5vh;
@@ -116,7 +118,7 @@ export const CurrentPageIndicator = styled.p`
   font-size: 4vh;
   margin-left: 25px;
   margin-right: 25px;
-  padding-bottom: 6px;
+  padding-top: 8px;
 
   @media (max-width: 560px) {
     font-size: 25px;

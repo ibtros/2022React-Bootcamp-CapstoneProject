@@ -1,7 +1,3 @@
-// import * as mockFeaturedBanners from '../data/featured-banners.json';
-
-// import * as mockFeaturedProducts from '../data/featured-products.json';
-
 import {
   FeaturedBannerImage,
   FeaturedBannersContainer,
@@ -13,20 +9,16 @@ import {
   ViewAllProductsButton,
 } from './styles/HomeStylesCss';
 import { Link, useNavigate } from 'react-router-dom';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 
-import { ProductList } from '../components/ProductList';
+import { ProductsGrid } from '../components/ProductsGrid';
 import { Spinner } from '../components/Spinner';
 import arrow from '../up-arrow-svgrepo-com.svg';
 import { useFeaturedBanners } from '../utils/hooks/useFeaturedBanners';
 import { useFeaturedProducts } from '../utils/hooks/useFeaturedProducts';
 import { useProductCategories } from '../utils/hooks/useProductCategories';
 
-// import { mockProductCategories } from '../data/product-categories';
-
 export const Home = () => {
-  console.log('se ejecuta el componente nuevamente');
-  // eslint-disable-next-line max-len
   const { data: {results: bannersData}, isLoading: isBannersDataLoading } = useFeaturedBanners();
   const { 
     data: {results: productCategoriesData}, 
@@ -35,7 +27,7 @@ export const Home = () => {
   const { 
     data: {results: featuredProductsData}, 
     isLoading: isFeaturedProductsDataLoading,
-  } = useFeaturedProducts();
+  } = useFeaturedProducts({pageSize: 16});
 
   const [featuredBanner, setFeaturedBanner] = useState({});
   const [productCategory, setProductCategory] = useState({});
@@ -76,19 +68,19 @@ export const Home = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isFeaturedProductsDataLoading]);
 
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     const currentIndex = productCategory.selectedCategoryIndex;
-  //     const newIndex = currentIndex < productCategory.productCategories.length - 1 ?
-  //     currentIndex + 1 : 0;
-  //     setProductCategory({
-  //       ...productCategory, 
-  //       selectedProductCategory: productCategory.productCategories[newIndex],
-  //       selectedCategoryIndex: newIndex,
-  //     });
-  //   }, 1000)
-  //   return () => clearInterval(interval);
-  // }, [productCategory]);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const currentIndex = productCategory.selectedCategoryIndex;
+      const newIndex = currentIndex < productCategory.productCategories.length - 1 ?
+      currentIndex + 1 : 0;
+      setProductCategory({
+        ...productCategory, 
+        selectedProductCategory: productCategory.productCategories[newIndex],
+        selectedCategoryIndex: newIndex,
+      });
+    }, 3000)
+    return () => clearInterval(interval);
+  }, [productCategory]);
 
   const changeToNextImage = (isNextChange) => {
     const currentIndex = featuredBanner.selectedBannerIndex;
@@ -103,6 +95,10 @@ export const Home = () => {
     });
   };
   
+  if (isBannersDataLoading || isFeaturedProductsDataLoading || isProductCategoriesDataLoading) {
+    return <Spinner />
+  }
+
   return (
     <>
       <FeaturedBannersContainer>
@@ -127,15 +123,10 @@ export const Home = () => {
           {productCategory?.selectedProductCategory?.data.name}
         </ProductCategoryName>
       </ProductCategoriesContainer>
-      {
-        isFeaturedProductsDataLoading ? 
-          <Spinner />
-        :
-          <ProductList products={featuredProducts} />
-      }
+      <ProductsGrid products={featuredProducts} />
       <Link to="/products">
         <ViewAllProductsButton>
-          View all products
+          VIEW ALL PRODUCTS
         </ViewAllProductsButton>
       </Link>
     </>

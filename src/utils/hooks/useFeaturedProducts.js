@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { API_BASE_URL } from '../constants';
 import { useLatestAPI } from './useLatestAPI';
 
-export function useFeaturedProducts() {
+export function useFeaturedProducts({pageSize = 12, page = 1, searchTerm}) {
   const { ref: apiRef, isLoading: isApiMetadataLoading } = useLatestAPI();
   const [featuredProducts, setFeaturedProducts] = useState(() => ({
     data: {},
@@ -20,11 +20,18 @@ export function useFeaturedProducts() {
     async function getFeaturedProducts() {
       try {
         setFeaturedProducts({ data: {}, isLoading: true });
+        let fetchUrl = `${API_BASE_URL}/documents/search?ref=${apiRef}&q=${encodeURIComponent(
+          '[[at(document.type, "product")]]'
+        )}&lang=en-us&pageSize=${pageSize}&page=${page}`;
+
+        if (searchTerm) {
+          fetchUrl = fetchUrl + `&q=${encodeURIComponent(
+            '[[fulltext(document, "' + searchTerm + '")]]'
+          )}`;
+        }
 
         const response = await fetch(
-          `${API_BASE_URL}/documents/search?ref=${apiRef}&q=${encodeURIComponent(
-            '[[at(document.type, "product")]]'
-          )}&lang=en-us&pageSize=16`,
+          fetchUrl,
           {
             signal: controller.signal,
           }
@@ -43,7 +50,7 @@ export function useFeaturedProducts() {
     return () => {
       controller.abort();
     };
-  }, [apiRef, isApiMetadataLoading]);
+  }, [apiRef, isApiMetadataLoading, pageSize, page, searchTerm]);
 
   return featuredProducts;
 }

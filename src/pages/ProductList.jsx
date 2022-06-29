@@ -1,57 +1,45 @@
-import * as productsData from '../data/products.json';
-
 import {
   CurrentPageIndicator,
   NextPage,
   PaginationControls,
   PreviousPage,
-  ProductListPageContainer,
+  ProductListContainer,
   ProductsContainer,
   Sidebar,
   SidebarElement,
   SidebarList,
-} from './styles/ProductListPageStylesCss';
+} from './styles/ProductListStylesCss';
 import { useEffect, useState } from 'react';
 
-import { ProductList } from '../components/ProductList';
+import { ProductsGrid } from '../components/ProductsGrid';
 import { Spinner } from '../components/Spinner';
 import arrow from '../up-arrow-svgrepo-com.svg';
+import { useFeaturedProducts } from '../utils/hooks/useFeaturedProducts';
 import { useProductCategories } from '../utils/hooks/useProductCategories';
 import { useSearchParams } from "react-router-dom";
 
-// import { mockProductCategories } from '../data/product-categories';
-
-
-
-export const ProductListPage = () => {
-  const [query] = useSearchParams();
+export const ProductList = () => {
+  const [query, setQuery] = useSearchParams();
   const category = query.get("category");
   const [activeProductCategories, setActiveProductCategories] = useState(
     category ? [category] : []
   );
   const [filteredProducts, setFilteredProducts] = useState([]);
-  const [isLoading, setIsloading] = useState(false);
   const [productCategories, setProductCategories] = useState([]);
+  const [pageData, setPageData] = useState({
+    page: 1,
+    totalPages: null,
+  });
 
   const { 
     data: {results: productCategoriesData}, 
     isLoading: isProductCategoriesDataLoading,
   } = useProductCategories();
 
-  useEffect(() => {
-    if (activeProductCategories.length === 0) {
-      setIsloading(true);
-      setTimeout(() => 
-      {
-        setFilteredProducts([...productsData.results]);
-        setIsloading(false); 
-      }, 2000);   
-    } else {
-      const newProducts = productsData.results.filter(product => 
-        activeProductCategories.includes(product.data.category.id));
-      setFilteredProducts([...newProducts]);      
-    }
-  }, [activeProductCategories]);
+  const { 
+    data: productsData, 
+    isLoading: isProductsDataLoading,
+  } = useFeaturedProducts({pageSize: 12, page: pageData.page});
 
   useEffect(() => {
     if (!isProductCategoriesDataLoading) {
@@ -60,6 +48,23 @@ export const ProductListPage = () => {
     return () => setProductCategories([]);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isProductCategoriesDataLoading]);
+
+  useEffect(() => {
+    if (!isProductsDataLoading) {
+      setPageData({
+        page: productsData.page,
+        totalPages: productsData.total_pages,
+      })
+      if (activeProductCategories.length === 0) {
+          setFilteredProducts([...productsData.results]);
+      } else {
+        const newProducts = productsData.results.filter(product => 
+          activeProductCategories.includes(product.data.category.id));
+        setFilteredProducts([...newProducts]);      
+      }  
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isProductsDataLoading, activeProductCategories]);
   
   const handleActivatedProductCategory = (productCategory) => {
     if (activeProductCategories.includes(productCategory.id)) {
@@ -71,15 +76,33 @@ export const ProductListPage = () => {
       setActiveProductCategories(currentActiveProductCategories => 
         [...currentActiveProductCategories, productCategory.id]);
     }
+    if (category) {
+      setQuery({});
+    }
   };
 
   const isActive = (productCategory) => {
     return activeProductCategories.includes(productCategory.id);
   };
-  console.log('productCategories: ', productCategories);
+
+  const handlePreviousPage = () => {
+    if (pageData.page > 1) {
+      setPageData({
+        page: pageData.page - 1,
+      });
+    }
+  };
+
+  const handleNextPage = () => {
+    if (pageData.page < pageData.totalPages) {
+      setPageData({
+        page: pageData.page + 1,
+      });
+    };
+  };
 
   return (
-    <ProductListPageContainer>
+    <ProductListContainer>
       <Sidebar>
         <SidebarList>
           {
@@ -99,18 +122,25 @@ export const ProductListPage = () => {
         </SidebarList>
       </Sidebar>
       {
-        isLoading ?
-        <Spinner />
+        isProductsDataLoading ?
+        <Spinner style={{'margin-left': '36% !important', 'margin-top': '5% !important'}}/>
         :
         <ProductsContainer>
-          <ProductList products={filteredProducts}/>
-          <PaginationControls>
-            <PreviousPage src={arrow} alt='previousPage' />
-              <CurrentPageIndicator>{1}</CurrentPageIndicator>
-            <NextPage src={arrow} alt='nextPage' />
-          </PaginationControls>
+          <ProductsGrid products={filteredProducts}/>
+          {
+            pageData.totalPages > 1 ? 
+              <PaginationControls>
+                <PreviousPage src={arrow} alt='previousPage' onClick={handlePreviousPage} />
+                  <CurrentPageIndicator>
+                    {pageData.page} / {pageData.totalPages}
+                  </CurrentPageIndicator>
+                <NextPage src={arrow} alt='nextPage' onClick={handleNextPage} />
+              </PaginationControls>
+            :
+              null
+          }
         </ProductsContainer>
       }
-    </ProductListPageContainer>
+    </ProductListContainer>
   )
 };

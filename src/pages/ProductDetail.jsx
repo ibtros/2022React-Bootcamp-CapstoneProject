@@ -1,31 +1,48 @@
-import { useEffect, useState } from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
+import {
+  AddButton,
+  AddQuantity,
+  AddQuantityContainer,
+  CarouselContainer,
+  CarouselImage,
+  InformationContainer,
+  ProductContainer,
+  ProductData,
+  ProductDesciption,
+  ProductDetailContainer,
+  ProductField,
+  ProductInformation,
+  ProductName,
+  Spec,
+  TagsContainer,
+} from './styles/ProductDetailStylesCss';
+import { useContext, useEffect, useState } from 'react';
+
+import Carousel from 'react-bootstrap/Carousel';
+import { ShoppingCartContext } from '../components/ShoppingCartContext';
 import { Spinner } from '../components/Spinner';
-import styled from 'styled-components';
 import { useParams } from 'react-router-dom';
 import { useProductById } from '../utils/hooks/useProductById';
 
-const ProductDesciption = styled.p`
-  width: 600px;
-  height: auto;
-`;
-
-const ProductInformation = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-`;
-
 export const ProductDetail = () => {
+  const { shoppingCart, setShoppingCart } = useContext(ShoppingCartContext);
+
   const {productId} = useParams();
   const { data: {results: productData}, isLoading } = useProductById({productId});
   const [product, setProduct] = useState({});
+  const [productQuantity, setProductQuantity] = useState(0);
 
   useEffect(() => {
     if (!isLoading) {
       setProduct(productData[0]);
     }
-  }, [isLoading]);
+    return () => setProduct({});
+  }, [isLoading, productData]);
+
+  const handleAddToCart = () => {
+    setShoppingCart(shoppingCart + parseInt(productQuantity, 10));
+  };
 
   if (isLoading) {
     return <Spinner />
@@ -34,38 +51,73 @@ export const ProductDetail = () => {
   if (!isLoading && !product) {
     return null;
   }
-
-  console.log('product: ', product);
-
+  
   return (
     <div>
-      <ProductInformation>
-        <label>{product?.name}</label>
-        <br/>
-        <label>Precio: $ {product?.data?.price}</label>
-        <br/>
-        <label>SKU: {product?.data?.sku}</label>
-        <br/>
-        <label>SLUG: {product?.data?.category?.slug}</label>
-        <br/>
-        <h4>Etiquetas: </h4>
-        {
-          product?.tags?.map((tag) => (
-            <label key={tag}>{tag}</label>
-          ))
-        }
-        <ProductDesciption>{product?.short_description}</ProductDesciption>
-        <br/>
-        <label>Especificaciones: </label>
-        <br/>
-        <ul>
-          {
-            product?.data?.spects?.map((spect) => 
-              <li>{spect?.spect_name}: {spect?.spect_value}</li>
-            )
-          }
-        </ul>
-      </ProductInformation>
+      <ProductContainer>
+        <ProductDetailContainer>
+          <CarouselContainer>
+            <Carousel>
+              {
+                product?.data?.images.map((productImage) => 
+                  <Carousel.Item key={productImage.image.url} interval={3000}>
+                    <CarouselImage
+                      src={productImage.image.url}
+                      alt={productImage.image.alt}
+                    />
+                  </Carousel.Item>
+                )
+              }
+            </Carousel>
+            <ProductField>Tags:</ProductField>
+            <TagsContainer>
+              {
+                product?.tags?.map((tag) => (
+                  <label key={tag}>{tag}</label>
+                ))
+              }
+            </TagsContainer>
+          </CarouselContainer>
+          <ProductInformation>
+            <ProductName>{product?.data?.name.toUpperCase()}</ProductName>
+            <ProductDesciption>{product?.data?.short_description}</ProductDesciption>
+            <InformationContainer>
+              <ProductField>Price:</ProductField>
+              <ProductField>SKU:</ProductField>
+            </InformationContainer>
+            <InformationContainer>
+              <ProductData>$ {product?.data?.price}</ProductData>
+              <ProductData>{product?.data?.sku}</ProductData>
+            </InformationContainer>
+            <ProductField>SLUG:</ProductField>
+            <ProductData>{product?.data?.category?.slug.toUpperCase()}</ProductData>
+            <ProductField>Specs: </ProductField>
+            <ul>
+              {
+                product?.data?.specs?.map((spec) => 
+                  <Spec key={spec?.spec_name}>{spec?.spec_name}: {spec?.spec_value}</Spec>
+                )
+              }
+            </ul>
+            <AddQuantityContainer>
+              <AddQuantity 
+                type='text' 
+                value={productQuantity ?? ''}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  setProductQuantity(value);
+                }}
+              />
+              <AddButton 
+                disabled={productQuantity > product?.data?.stock || product?.data?.stock === 0}
+                onClick={handleAddToCart}
+              >
+                ADD TO CART
+              </AddButton>
+            </AddQuantityContainer>
+          </ProductInformation>
+        </ProductDetailContainer>
+      </ProductContainer>
     </div>
   )
 }

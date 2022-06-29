@@ -20,10 +20,8 @@ export function useProductById({productId}) {
     async function getProduct() {
       try {
         setProduct({ data: {}, isLoading: true });
-        console.log('productId: ', productId);
         const ENCODE = '[[at(document.id, "' + productId + '")]]';
         const response = await fetch(
-          // eslint-disable-next-line max-len
           `${API_BASE_URL}/documents/search?ref=${apiRef}&q=${encodeURIComponent(ENCODE)}`, 
           {
             signal: controller.signal,
