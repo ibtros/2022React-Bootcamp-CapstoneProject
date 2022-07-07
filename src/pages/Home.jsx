@@ -3,6 +3,7 @@ import {
   FeaturedBannersContainer,
   LeftArrow,
   ProductCategoriesContainer,
+  ProductCategoryContainer,
   ProductCategoryImage,
   ProductCategoryName,
   RightArrow,
@@ -30,12 +31,11 @@ export const Home = () => {
   } = useFeaturedProducts({pageSize: 16});
 
   const [featuredBanner, setFeaturedBanner] = useState({});
-  const [productCategory, setProductCategory] = useState({});
+  const [productCategories, setProductCategories] = useState([]);
   const [featuredProducts, setFeaturedProducts] = useState([]);
-  const [productCategoryLoaded, setProductCategoryLoaded] = useState(false);
 
   const navigate = useNavigate();
-
+  
   useEffect(() => {
     if (!isBannersDataLoading) {
       setFeaturedBanner({
@@ -45,42 +45,21 @@ export const Home = () => {
       });
     }
     return () => setFeaturedBanner({});
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isBannersDataLoading]);
+  }, [isBannersDataLoading, bannersData]);
 
   useEffect(() => {
     if (!isProductCategoriesDataLoading) {
-      setProductCategory({
-        productCategories: productCategoriesData,
-        selectedCategoryIndex: 0,
-        selectedProductCategory: productCategoriesData[0],
-      });
+      setProductCategories([...productCategoriesData]);
     }
-    return () => setProductCategory({});
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isProductCategoriesDataLoading]);
+    return () => setProductCategories([]);
+  }, [isProductCategoriesDataLoading, productCategoriesData]);
 
   useEffect(() => {
     if (!isFeaturedProductsDataLoading) {
       setFeaturedProducts([...featuredProductsData]);
     }
     return () => setFeaturedProducts([]);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isFeaturedProductsDataLoading]);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const currentIndex = productCategory.selectedCategoryIndex;
-      const newIndex = currentIndex < productCategory.productCategories.length - 1 ?
-      currentIndex + 1 : 0;
-      setProductCategory({
-        ...productCategory, 
-        selectedProductCategory: productCategory.productCategories[newIndex],
-        selectedCategoryIndex: newIndex,
-      });
-    }, 3000)
-    return () => clearInterval(interval);
-  }, [productCategory]);
+  }, [isFeaturedProductsDataLoading, featuredProductsData]);
 
   const changeToNextImage = (isNextChange) => {
     const currentIndex = featuredBanner.selectedBannerIndex;
@@ -110,18 +89,22 @@ export const Home = () => {
         <RightArrow src={arrow} alt='rightArrow' onClick={() => changeToNextImage(true)}/>
       </FeaturedBannersContainer>     
       <ProductCategoriesContainer>
-        <ProductCategoryImage 
-          src={productCategory?.selectedProductCategory?.data.main_image.url} 
-          alt={productCategory?.selectedProductCategory?.data.main_image.alt}
-          className={productCategoryLoaded ? 'loaded' : ''}
-          onLoad={() => setProductCategoryLoaded(true)}
-          onClick={() => {
-            navigate(`products/?category=${productCategory?.selectedProductCategory?.id}`);
-          }}
-        />
-        <ProductCategoryName>
-          {productCategory?.selectedProductCategory?.data.name}
-        </ProductCategoryName>
+        {
+          productCategories.map(productCategory => (
+            <ProductCategoryContainer key={productCategory.id}>
+              <ProductCategoryImage 
+                src={productCategory.data.main_image.url} 
+                alt={productCategory.data.main_image.alt}
+                onClick={() => {
+                  navigate(`products/?category=${productCategory.id}`);
+                }}
+              />
+              <ProductCategoryName>
+                {productCategory.data.name}
+              </ProductCategoryName>
+            </ProductCategoryContainer>
+          ))
+        }
       </ProductCategoriesContainer>
       <ProductsGrid products={featuredProducts} />
       <Link to="/products">

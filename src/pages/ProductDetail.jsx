@@ -26,12 +26,13 @@ import { useParams } from 'react-router-dom';
 import { useProductById } from '../utils/hooks/useProductById';
 
 export const ProductDetail = () => {
-  const { shoppingCart, setShoppingCart } = useContext(ShoppingCartContext);
+  const {dispatch} = useContext(ShoppingCartContext);
 
   const {productId} = useParams();
   const { data: {results: productData}, isLoading } = useProductById({productId});
   const [product, setProduct] = useState({});
   const [productQuantity, setProductQuantity] = useState(0);
+  const [totalProductQuantity, setTotalProductQuantity] = useState(0);
 
   useEffect(() => {
     if (!isLoading) {
@@ -40,8 +41,24 @@ export const ProductDetail = () => {
     return () => setProduct({});
   }, [isLoading, productData]);
 
-  const handleAddToCart = () => {
-    setShoppingCart(shoppingCart + parseInt(productQuantity, 10));
+  const handleAddToCart = (e) => {
+    e.preventDefault();
+    setTotalProductQuantity(quantity => quantity + parseInt(productQuantity, 10));
+    const action = {
+      type: 'add',
+      payload: {
+        product,
+        quantity: parseInt(productQuantity, 10),
+      },
+    };
+    dispatch(action);
+  };
+
+  const handleProductQuantity = (e) => {
+    const value = e.target.value;
+    if (product?.data?.stock > totalProductQuantity) {
+      setProductQuantity(value);
+    }
   };
 
   if (isLoading) {
@@ -100,20 +117,24 @@ export const ProductDetail = () => {
               }
             </ul>
             <AddQuantityContainer>
-              <AddQuantity 
-                type='text' 
-                value={productQuantity ?? ''}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  setProductQuantity(value);
-                }}
-              />
-              <AddButton 
-                disabled={productQuantity > product?.data?.stock || product?.data?.stock === 0}
-                onClick={handleAddToCart}
-              >
-                ADD TO CART
-              </AddButton>
+              <form onSubmit={handleAddToCart}>
+                <AddQuantity 
+                  type='text' 
+                  value={productQuantity ?? ''}
+                  onChange={handleProductQuantity}
+                />
+                <AddButton 
+                  disabled={
+                    productQuantity > product?.data?.stock 
+                    || product?.data?.stock === 0
+                    || !(product?.data?.stock >= 
+                      parseInt(totalProductQuantity, 10) + parseInt(productQuantity, 10))
+                  }
+                  type='submit'
+                >
+                  ADD TO CART
+                </AddButton>
+              </form>
             </AddQuantityContainer>
           </ProductInformation>
         </ProductDetailContainer>

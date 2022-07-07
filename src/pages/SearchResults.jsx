@@ -34,8 +34,7 @@ export const SearchResults = () => {
       })
       setFilteredProducts([...productsData.results]);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isProductsDataLoading]);
+  }, [isProductsDataLoading, productsData]);
 
   const handlePreviousPage = () => {
     if (pageData.page > 1) {

@@ -1,4 +1,5 @@
 import {
+  Button,
   CurrentPageIndicator,
   NextPage,
   PaginationControls,
@@ -46,8 +47,7 @@ export const ProductList = () => {
       setProductCategories([...productCategoriesData]);
     }
     return () => setProductCategories([]);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isProductCategoriesDataLoading]);
+  }, [isProductCategoriesDataLoading, productCategoriesData]);
 
   useEffect(() => {
     if (!isProductsDataLoading) {
@@ -63,8 +63,7 @@ export const ProductList = () => {
         setFilteredProducts([...newProducts]);      
       }  
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isProductsDataLoading, activeProductCategories]);
+  }, [isProductsDataLoading, activeProductCategories, productsData]);
   
   const handleActivatedProductCategory = (productCategory) => {
     if (activeProductCategories.includes(productCategory.id)) {
@@ -101,6 +100,10 @@ export const ProductList = () => {
     };
   };
 
+  const handleClearFilters = () => {
+    setActiveProductCategories([]);
+  };
+
   return (
     <ProductListContainer>
       <Sidebar>
@@ -119,6 +122,10 @@ export const ProductList = () => {
               </SidebarElement>
             )
           }
+          <Button 
+            onClick={handleClearFilters} 
+            disabled={activeProductCategories.length === 0}
+          >Clear filters</Button>
         </SidebarList>
       </Sidebar>
       {

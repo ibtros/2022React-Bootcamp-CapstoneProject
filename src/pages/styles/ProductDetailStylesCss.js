@@ -2,6 +2,7 @@ import styled from 'styled-components';
 
 export const ProductContainer = styled.div`
   padding: 4%;
+  height: auto;
 `;
 
 export const ProductDetailContainer = styled.div`
@@ -13,17 +14,31 @@ export const ProductDetailContainer = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-bewteen;
+  height: auto;
+
+  @media (max-width: 560px) {
+    flex-direction: column;
+  }
 `;
 
 export const CarouselContainer = styled.div`
-  height: 500px;
+  height: auto;
   padding-left: 20px;
   width: 400px;
+
+  @media (max-width: 560px) {
+    width: 300px;
+  }
 `;
 
 export const CarouselImage = styled.img`
   height: 500px;
   width: 400px;
+  
+  @media (max-width: 560px) {
+    height: 300px;
+    width: 300px;
+  }
 `;
 
 export const ProductInformation = styled.div`
@@ -34,6 +49,11 @@ export const ProductInformation = styled.div`
   margin-top: 4%;
   padding-left: 3%;
   width: 54%;
+  height: auto;
+
+  @media (max-width: 560px) {
+    width: 90%;
+  }
 `;
 
 export const ProductName = styled.label`
@@ -41,6 +61,11 @@ export const ProductName = styled.label`
   font-size: 25px;
   font-weight: bold;
   text-align: left;
+
+  @media (max-width: 560px) {
+    font-size: 18px;
+    height: auto;
+  }
 `;
 
 export const ProductDesciption = styled.p`
@@ -48,6 +73,12 @@ export const ProductDesciption = styled.p`
   font-size: 16px;
   text-align: left;
   width: 95%;
+
+  @media (max-width: 560px) {
+    width: 98%;
+    font-size: 14px;
+    height: auto;
+  }
 `;
 
 export const InformationContainer = styled.div`
@@ -55,6 +86,11 @@ export const InformationContainer = styled.div`
   flex-direction: row;
   justify-content: space-between;
   margin-right: 10%;
+  height: auto;
+
+  @media (max-width: 560px) {
+    flex-direction: column;
+  }
 `;
 
 export const ProductField = styled.label`
@@ -82,6 +118,12 @@ export const TagsContainer = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  height: auto;
+  margin-bottom: 15px;
+
+  @media (max-width: 560px) {
+    flex-direction: column;
+  }  
 `;
 
 export const AddQuantityContainer = styled.div`

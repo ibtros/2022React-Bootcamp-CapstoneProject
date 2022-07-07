@@ -14,10 +14,17 @@ import { ShoppingCartContext } from './ShoppingCartContext';
 import { useContext } from 'react';
 
 export const ProductsGrid = ({products}) => {
-  const { shoppingCart, setShoppingCart } = useContext(ShoppingCartContext);
-
-  const handleAddToCart = () => {
-    setShoppingCart(shoppingCart + 1);
+  const {dispatch} = useContext(ShoppingCartContext);
+  
+  const handleAddToCart = (product) => {
+    const action = {
+      type: 'add',
+      payload: {
+        product,
+        quantity: 1,
+      },
+    };
+    dispatch(action);
   };
 
   return (
@@ -41,7 +48,7 @@ export const ProductsGrid = ({products}) => {
             <AddButton 
               type='text'
               disabled={product.data.stock === 0}
-              onClick={handleAddToCart}
+              onClick={() => handleAddToCart(product)}
             >
               ADD TO CART
             </AddButton>

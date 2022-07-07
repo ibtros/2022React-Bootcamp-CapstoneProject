@@ -2,11 +2,22 @@ import styled from 'styled-components';
 
 export const ProductCategoriesContainer = styled.div`
   align-items: center;
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(3, 2fr);
   justify-content: center;
   margin-bottom: 5vh;
+  margin-left: 2vh;
+  margin-right: 2vh;
   margin-top: 5vh;
+
+  @media (max-width: 560px) {
+    grid-template-columns: repeat(2, 3fr);
+  }
+
+  @media (min-width: 561px) and (max-width: 820px) {
+    grid-template-columns: repeat(2, 3fr);
+  }
 `;
 
 export const Arrow = styled.img`
@@ -35,32 +46,18 @@ export const RightArrow = styled(Arrow)`
 `;
 
 export const ProductCategoryImage = styled.img`
-  height: 560px;
-  opacity: 0;
-  transition: 2s;
-  width: 80%;
-  
-  &.loaded {
-    opacity: 1;
-  }
-
-  @media (max-width: 560px) {
-    height: 200px;
-  }
-
-  @media (min-width: 561px) and (max-width: 820px) {
-    height: 420px;
-  }
+  height: 100%;
+  width: 100%;
 `;
 
 export const ProductCategoryName = styled.div`
   background-color: #d4b595;
   font-family: Vegur, 'PT Sans', Verdana, sans-serif;
-  font-size: 20px;
+  font-size: 15px;
   font-weight: 300;
   padding-bottom: 8px;
   padding-top: 8px;
-  width: 80%;
+  width: 100%;
 `;
 
 export const FeaturedBannersContainer = styled.div`
@@ -97,4 +94,9 @@ export const ViewAllProductsButton = styled.button`
   height: 35px;
   margin-bottom: 20px;
   width: 165px;
+`;
+
+export const ProductCategoryContainer = styled.div`
+  display: flex;
+  flex-direction: column;
 `;

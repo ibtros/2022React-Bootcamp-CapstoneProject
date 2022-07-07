@@ -44,8 +44,15 @@ export const LogoImage = styled.img`
   }
 `;
 
-export const ShoppingCart = styled.img`
+export const ShoppingCartContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  color: black;
+`;
+
+export const ShoppingCartImage = styled.img`
   max-height: 10vh;
+  margin-right: 5px;
 
   @media (max-width: 560px) {
     max-height: 8vh;

@@ -4,7 +4,8 @@ import {
   AppHeader,
   Footer,
   LogoImage,
-  ShoppingCart,
+  ShoppingCartContainer,
+  ShoppingCartImage,
 } from './pages/styles/AppStylesCss';
 import { Link, Navigate, Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 
@@ -14,16 +15,22 @@ import { ProductDetail } from './pages/ProductDetail';
 import { ProductList } from './pages/ProductList';
 import { Search } from './components/Search';
 import { SearchResults } from './pages/SearchResults';
+import { ShoppingCart } from './pages/ShoppingCart';
 import { ShoppingCartContext } from './components/ShoppingCartContext';
 import logo from './ibethHome.png';
 import shoppingCartImage from './reusable-shopping-bag-svgrepo-com.svg';
-import { useState } from 'react';
+import { shoppingCartReducer } from './components/shoppingCartReducer';
+import { useReducer } from 'react';
 
 function App() {
-  const [shoppingCart, setShoppingCart] = useState(0);
+  const [shoppingCartState, dispatch] = useReducer(shoppingCartReducer, []);
+
+  const getShoppingCartQuantity = () => {
+    return shoppingCartState.map(item => item.quantity).reduce((prev, curr) => prev + curr, 0);;
+  };
 
   return (
-    <ShoppingCartContext.Provider value={{shoppingCart, setShoppingCart}}>
+    <ShoppingCartContext.Provider value={{shoppingCartState, dispatch}}>
       <Router>
         <AppContainer>
           <AppHeader>
@@ -31,9 +38,12 @@ function App() {
               <LogoImage src={logo} alt='logo'/>
             </Link>
             <Search />
-            <Link to="/cart">
-              <ShoppingCart src={shoppingCartImage} alt='shoppingCart' />
-            </Link>
+            <ShoppingCartContainer>
+              <Link to="/cart">
+                <ShoppingCartImage src={shoppingCartImage} alt='shoppingCart' />
+              </Link>
+              <span>{shoppingCartState.length > 0 && getShoppingCartQuantity()}</span>
+            </ShoppingCartContainer>
           </AppHeader>
           <AppBody>
             <Routes>

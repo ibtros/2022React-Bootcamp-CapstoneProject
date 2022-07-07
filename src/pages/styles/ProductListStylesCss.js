@@ -128,3 +128,17 @@ export const CurrentPageIndicator = styled.p`
     font-size: 35px;
   }
 `;
+
+export const Button = styled.button`
+  background-color: #d4b595;
+  border-color: #c9c9c9;
+  border-style: solid;
+  border-width: 1px;
+  cursor: pointer;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  height: 35px;
+  margin-bottom: 20px;
+  margin-top: 15px;
+  width: 165px;
+`;
